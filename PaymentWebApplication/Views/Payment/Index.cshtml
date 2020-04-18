@@ -1,27 +1,16 @@
-﻿@model PaymentWebApplication.Models.PaymentInfo
+﻿@model PaymentWebApplication.ViewModel.PaymentInfoViewModel
 
 @{
-    ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
 
-<h4>PaymentInfo</h4>
+<h4>Payment Info</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Index">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ProcessingCode" class="control-label"></label>
-                <input asp-for="ProcessingCode" class="form-control" />
-                <span asp-validation-for="ProcessingCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SystemTraceNr" class="control-label"></label>
-                <input asp-for="SystemTraceNr" class="form-control" />
-                <span asp-validation-for="SystemTraceNr" class="text-danger"></span>
-            </div>
+           
             <div class="form-group">
                 <label asp-for="FunctionCode" class="control-label"></label>
                 <input asp-for="FunctionCode" class="form-control" />
@@ -54,9 +43,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

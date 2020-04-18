@@ -6,12 +6,17 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Payment.Business.Model;
 using PaymentWebApplication.Models;
+using PaymentWebApplication.ViewModel;
+using AutoMapper;
+using Payment.Business.Services;
 
 namespace PaymentWebApplication.Controllers
 {
@@ -27,34 +32,30 @@ namespace PaymentWebApplication.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(new PaymentInfo());
+            return View(new PaymentInfoViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index([Bind] PaymentInfo paymentInfo)
+        public async Task<IActionResult> Index([Bind] PaymentInfoViewModel paymentInfo)
         {
-            PaymentInfoResponse paymentInfoResponse;
-            PaymentInfoCommand paymentInfoCommand = new PaymentInfoCommand();
-            using (var httpClient = new HttpClient())
+            if (ModelState.IsValid)
             {
-                using (var keyResponse = await httpClient.GetAsync(_configuration["PaymentServiceBaseUrl"] + "/GetKey"))
-                {
-                    string apiGetKeyResponse = await keyResponse.Content.ReadAsStringAsync();
-                    string key = JObject.Parse(apiGetKeyResponse)["GetKeyResult"].ToString();
-                    paymentInfoCommand.Key = key;
-                    paymentInfoCommand.EncyptedBody = new AesOperation().Encrypt(JsonConvert.SerializeObject(paymentInfo),key);
-                    
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(paymentInfoCommand), Encoding.UTF8, "application/json");
-                    
-                    using (var response = await httpClient.PostAsync(_configuration["PaymentServiceBaseUrl"] + "/Pay", content))
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        paymentInfoResponse = JsonConvert.DeserializeObject<PaymentInfoResponse>(apiResponse);
-                    }
-                }
+                PaymentInfoRequest paymentInfoRequest =new PaymentInfoRequest() { 
+                AmountTrxn = paymentInfo.AmountTrxn,
+                CardHolder = paymentInfo.CardHolder,
+                CurrencyCode = paymentInfo.CurrencyCode,
+                CardNo = paymentInfo.CardNo,
+                FunctionCode = paymentInfo.FunctionCode
+                };
+                PaymentInfoResponse paymentInfoResponse = await new PaymentService(_configuration["PaymentServiceBaseUrl"].ToString()).DoTransaction(paymentInfoRequest);
+                return RedirectToAction("SuccessPayment", new { code = paymentInfoResponse.ApprovalCode });
             }
-            return RedirectToAction("SuccessPayment", new { code = paymentInfoResponse.ApprovalCode });
+            else 
+            {
+                //TODO add view error message
+                return View();
+            }
         }
 
         public IActionResult SuccessPayment(string code)

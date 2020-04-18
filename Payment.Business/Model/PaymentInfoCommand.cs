@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PaymentWebApplication.Models
+namespace Payment.Business.Model
 {
     public class PaymentInfoCommand
     {

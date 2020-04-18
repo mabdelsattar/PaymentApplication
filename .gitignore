@@ -1,0 +1,6 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Payment.Business/bin/Debug/netstandard2.0
+/Payment.Business/obj

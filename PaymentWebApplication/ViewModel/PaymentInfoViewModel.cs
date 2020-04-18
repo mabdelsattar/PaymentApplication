@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PaymentWebApplication.Models
+namespace PaymentWebApplication.ViewModel
 {
-    public class PaymentInfo
+    public class PaymentInfoViewModel
     {
-        public string ProcessingCode { get; set; }
-        public int? SystemTraceNr { get; set; }
         public int? FunctionCode { get; set; }
         public string CardNo { get; set; }
         public string CardHolder { get; set; }
