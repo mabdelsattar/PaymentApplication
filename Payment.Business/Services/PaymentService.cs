@@ -8,14 +8,9 @@ using Payment.Business.Model;
 
 namespace Payment.Business.Services
 {
-    public class PaymentService
+    public class PaymentService: IPaymentService
     {
-        public string _baseUrl;
-        public PaymentService(string baseUrl)
-        {
-            _baseUrl = baseUrl;
-        }
-        public async Task<PaymentInfoResponse> DoTransaction(PaymentInfoRequest paymentInfoRequest)
+        public async Task<PaymentInfoResponse> DoTransaction(string baseUrl, PaymentInfoRequest paymentInfoRequest)
         {
             paymentInfoRequest.SystemTraceNr = RandomNumber(1000, 10000);
             paymentInfoRequest.ProcessingCode = RandomNumber(999,9999).ToString();
@@ -23,7 +18,7 @@ namespace Payment.Business.Services
             PaymentInfoCommand paymentInfoCommand = new PaymentInfoCommand();
             using (var httpClient = new HttpClient())
             {
-                using (var keyResponse = await httpClient.GetAsync(_baseUrl + "/GetKey"))
+                using (var keyResponse = await httpClient.GetAsync(baseUrl + "/GetKey"))
                 {
                     string apiGetKeyResponse = await keyResponse.Content.ReadAsStringAsync();
                     string key = JObject.Parse(apiGetKeyResponse)["GetKeyResult"].ToString();
@@ -32,7 +27,7 @@ namespace Payment.Business.Services
 
                     StringContent content = new StringContent(JsonConvert.SerializeObject(paymentInfoCommand), Encoding.UTF8, "application/json");
 
-                    using (var response = await httpClient.PostAsync(_baseUrl + "/Pay", content))
+                    using (var response = await httpClient.PostAsync(baseUrl + "/Pay", content))
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
                         PaymentInfoResponse paymentInfoResponse = JsonConvert.DeserializeObject<PaymentInfoResponse>(apiResponse);

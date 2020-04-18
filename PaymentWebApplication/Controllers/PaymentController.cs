@@ -25,9 +25,13 @@ namespace PaymentWebApplication.Controllers
     public class PaymentController : Controller
     {
         private IConfiguration _configuration;
-        public PaymentController(IConfiguration Configuration)
+        private IEncryptionService _encryptionService;
+        private IPaymentService _paymentService;
+        public PaymentController(IConfiguration configuration,IEncryptionService encryptionService, IPaymentService paymentService)
         {
-            _configuration = Configuration;
+            _configuration = configuration;
+            _encryptionService = encryptionService;
+            _paymentService = paymentService;
         }
 
         [HttpGet]
@@ -57,7 +61,7 @@ namespace PaymentWebApplication.Controllers
                 CardNo = paymentInfo.CardNo,
                 FunctionCode = paymentInfo.FunctionCode
                 };
-                PaymentInfoResponse paymentInfoResponse = await new PaymentService(_configuration["PaymentServiceBaseUrl"].ToString()).DoTransaction(paymentInfoRequest);
+                PaymentInfoResponse paymentInfoResponse = await _paymentService.DoTransaction(_configuration["PaymentServiceBaseUrl"].ToString(),paymentInfoRequest);
                 return RedirectToAction("SuccessPayment", new { code = paymentInfoResponse.ApprovalCode });
             }
             else 

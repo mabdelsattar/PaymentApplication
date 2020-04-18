@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PaymentWebApplication.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Payment.Business.Services;
 
 namespace PaymentWebApplication
 {
@@ -40,6 +41,8 @@ namespace PaymentWebApplication
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IEncryptionService, EncryptionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
