@@ -20,6 +20,7 @@ namespace PaymentWebApplication.ViewModel
         public string CardHolder { get; set; }
         [Required]
         [Display(Name = "Amount of Transaction")]
+        [Range(1,999999999)]
         public double AmountTrxn { get; set; }
         [Required]
         [Display(Name = "Curreny Code")]
