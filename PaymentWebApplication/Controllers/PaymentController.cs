@@ -17,6 +17,7 @@ using PaymentWebApplication.Models;
 using PaymentWebApplication.ViewModel;
 using AutoMapper;
 using Payment.Business.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PaymentWebApplication.Controllers
 {
@@ -32,6 +33,14 @@ namespace PaymentWebApplication.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
+            List<SelectListItem> currencyList = new List<SelectListItem>();
+
+            currencyList.Add(new SelectListItem("EGP", "1"));
+            currencyList.Add(new SelectListItem("SAR", "2"));
+            currencyList.Add(new SelectListItem("USD", "3"));            
+            ViewBag.currenyList = currencyList;
+
             return View(new PaymentInfoViewModel());
         }
 
