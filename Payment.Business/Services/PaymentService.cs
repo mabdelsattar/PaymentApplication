@@ -10,6 +10,11 @@ namespace Payment.Business.Services
 {
     public class PaymentService: IPaymentService
     {
+        private readonly IEncryptionService _encryptionService;
+        public PaymentService(IEncryptionService encryptionService)
+        {
+            _encryptionService = encryptionService;
+        }
         public async Task<PaymentInfoResponse> DoTransaction(string baseUrl, PaymentInfoRequest paymentInfoRequest)
         {
             paymentInfoRequest.SystemTraceNr = RandomNumber(1000, 10000);
@@ -23,7 +28,7 @@ namespace Payment.Business.Services
                     string apiGetKeyResponse = await keyResponse.Content.ReadAsStringAsync();
                     string key = JObject.Parse(apiGetKeyResponse)["GetKeyResult"].ToString();
                     paymentInfoCommand.Key = key;
-                    paymentInfoCommand.EncyptedBody = new EncryptionService().Encrypt(JsonConvert.SerializeObject(paymentInfoRequest), key);
+                    paymentInfoCommand.EncyptedBody = _encryptionService.Encrypt(JsonConvert.SerializeObject(paymentInfoRequest), key);
 
                     StringContent content = new StringContent(JsonConvert.SerializeObject(paymentInfoCommand), Encoding.UTF8, "application/json");
 

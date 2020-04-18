@@ -15,7 +15,6 @@ using Newtonsoft.Json.Linq;
 using Payment.Business.Model;
 using PaymentWebApplication.Models;
 using PaymentWebApplication.ViewModel;
-using AutoMapper;
 using Payment.Business.Services;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -24,9 +23,9 @@ namespace PaymentWebApplication.Controllers
     [Authorize]
     public class PaymentController : Controller
     {
-        private IConfiguration _configuration;
-        private IEncryptionService _encryptionService;
-        private IPaymentService _paymentService;
+        private readonly IConfiguration _configuration;
+        private readonly IEncryptionService _encryptionService;
+        private readonly IPaymentService _paymentService;
         public PaymentController(IConfiguration configuration,IEncryptionService encryptionService, IPaymentService paymentService)
         {
             _configuration = configuration;
